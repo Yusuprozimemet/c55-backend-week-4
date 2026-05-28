@@ -9,6 +9,8 @@ import com.analyticsapi.week4.model.AnalyticsRecord;
 import com.analyticsapi.week4.repository.AnalyticsRepository;
 import com.analyticsapi.week4.dto.AnalyticsRecordReplaceRequest;
 import org.springframework.stereotype.Service;
+import com.analyticsapi.week4.dto.AnalyticsSummary;
+import java.util.Map;
 
 import java.time.Instant;
 import java.util.Comparator;
@@ -83,6 +85,33 @@ public class AnalyticsService {
                 .build();
 
         return repository.save(updated);
+    }
+
+    public AnalyticsSummary getSummary(
+            Instant from,
+            Instant to,
+            String eventType,
+            String eventSource,
+            String sessionId){
+
+        List<AnalyticsRecord> filtered = list(from, to, eventType, eventSource, sessionId, Integer.MAX_VALUE, 0);
+
+        Map<String, Long> totalsByEventType = filtered.stream()
+                .collect(Collectors.groupingBy(
+                        AnalyticsRecord::getEventType,
+                        Collectors.counting()
+                ));
+
+        long uniqueSessions = filtered.stream()
+                .map(AnalyticsRecord::getSessionId)
+                .distinct()
+                .count();
+
+        return AnalyticsSummary.builder()
+                .totalRecords(filtered.size())
+                .recordsByCategory(totalsByEventType)
+                .uniqueSessions(uniqueSessions)
+                .build();
     }
 
 
