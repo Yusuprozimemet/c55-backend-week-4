@@ -3,15 +3,18 @@ package com.analyticsapi.week4.service;
 import java.util.UUID;
 
 import com.analyticsapi.week4.dto.AnalyticsRecordCreateRequest;
+import com.analyticsapi.week4.dto.AnalyticsRecordReplaceRequest;
 import com.analyticsapi.week4.exception.RecordNotFoundException;
 import com.analyticsapi.week4.model.AnalyticsRecord;
 import com.analyticsapi.week4.repository.AnalyticsRepository;
+import com.analyticsapi.week4.dto.AnalyticsRecordReplaceRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 
 @Service
@@ -59,5 +62,29 @@ public class AnalyticsService {
             .limit(limit)
             .collect(Collectors.toList());
         }
-    
+
+    public void delete(String id){
+        boolean removed = repository.deleteById(id);
+            if(!removed){
+                throw new RecordNotFoundException(id);
+            }
+        }
+
+    public AnalyticsRecord replace(String id, AnalyticsRecordReplaceRequest request){
+        repository.findById(id)
+                 .orElseThrow(() -> new RecordNotFoundException(id));
+
+        AnalyticsRecord updated = AnalyticsRecord.builder()
+                .id(id)
+                .timestamp(request.getTimestamp())
+                .eventType(request.getEventType())
+                .eventSource(request.getEventSource())
+                .sessionId(request.getSessionId())
+                .build();
+
+        return repository.save(updated);
+    }
+
+
 }
+    

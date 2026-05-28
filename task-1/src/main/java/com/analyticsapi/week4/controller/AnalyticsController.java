@@ -3,6 +3,7 @@ package com.analyticsapi.week4.controller;
 import com.analyticsapi.week4.dto.AnalyticsRecordCreateRequest;
 import com.analyticsapi.week4.model.AnalyticsRecord;
 import com.analyticsapi.week4.service.AnalyticsService;
+import com.analyticsapi.week4.dto.AnalyticsRecordReplaceRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,4 +51,18 @@ public class AnalyticsController {
         List<AnalyticsRecord> records = service.list(from, to, eventType, eventSource, sessionId, limit, offset);
         return ResponseEntity.ok(records);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AnalyticsRecord> replace (
+        @PathVariable String id,
+        @Valid @RequestBody AnalyticsRecordReplaceRequest request){
+            AnalyticsRecord record = service.replace(id, request);
+            return ResponseEntity.ok(record);
+        }
 }
