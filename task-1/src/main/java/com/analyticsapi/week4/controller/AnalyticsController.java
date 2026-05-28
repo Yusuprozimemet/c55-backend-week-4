@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.Instant;
+import java.util.List;
 
 
 @RestController
@@ -33,5 +35,19 @@ public class AnalyticsController {
     public ResponseEntity<AnalyticsRecord> getById(@PathVariable String id) {
         AnalyticsRecord record = service.getById(id);
         return ResponseEntity.ok(record);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AnalyticsRecord>> list(
+        @RequestParam(required = false) Instant from,
+        @RequestParam(required = false) Instant to,
+        @RequestParam(required = false) String eventType,
+        @RequestParam(required = false) String eventSource,
+        @RequestParam(required = false) String sessionId,
+        @RequestParam(defaultValue = "100") int limit,
+        @RequestParam(defaultValue = "0") int offset
+    ){
+        List<AnalyticsRecord> records = service.list(from, to, eventType, eventSource, sessionId, limit, offset);
+        return ResponseEntity.ok(records);
     }
 }

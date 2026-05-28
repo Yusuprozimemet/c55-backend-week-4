@@ -8,6 +8,12 @@ import com.analyticsapi.week4.model.AnalyticsRecord;
 import com.analyticsapi.week4.repository.AnalyticsRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 @Service
 public class AnalyticsService {
 
@@ -32,4 +38,26 @@ public class AnalyticsService {
         return repository.findById(id)
         .orElseThrow(() -> new RecordNotFoundException(id));
     }
+
+    public List<AnalyticsRecord> list(
+        Instant from,
+        Instant to,
+        String eventType,
+        String eventSource,
+        String sessionId,
+        int limit,
+        int offset){
+
+        return repository.findAll().stream()
+            .filter(r -> from == null || !r.getTimestamp().isBefore(from))
+            .filter(r -> to == null || !r.getTimestamp().isAfter(to))
+            .filter(r -> eventType == null || r.getEventType().equals(eventType))
+            .filter(r -> eventSource == null || r.getEventSource().equals(eventSource))
+            .filter(r -> sessionId == null || r.getSessionId().equals(sessionId))
+            .sorted(Comparator.comparing(AnalyticsRecord::getTimestamp).reversed())
+            .skip(offset)
+            .limit(limit)
+            .collect(Collectors.toList());
+        }
+    
 }
