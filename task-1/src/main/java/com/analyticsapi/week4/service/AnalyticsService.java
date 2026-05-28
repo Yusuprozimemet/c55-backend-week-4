@@ -109,7 +109,7 @@ public class AnalyticsService {
 
         return AnalyticsSummary.builder()
                 .totalRecords(filtered.size())
-                .recordsByCategory(totalsByEventType)
+                .totalsByEventType(totalsByEventType)
                 .uniqueSessions(uniqueSessions)
                 .build();
     }

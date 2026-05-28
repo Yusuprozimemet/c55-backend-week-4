@@ -4,7 +4,6 @@ import com.analyticsapi.week4.dto.AnalyticsRecordCreateRequest;
 import com.analyticsapi.week4.model.AnalyticsRecord;
 import com.analyticsapi.week4.service.AnalyticsService;
 import com.analyticsapi.week4.dto.AnalyticsRecordReplaceRequest;
-import com.analyticsapi.week4.dto.AnalyticsSummary;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,19 +51,6 @@ public class AnalyticsController {
         List<AnalyticsRecord> records = service.list(from, to, eventType, eventSource, sessionId, limit, offset);
         return ResponseEntity.ok(records);
     }
-
-    @GetMapping("/api/analytics-summary")
-    public ResponseEntity<AnalyticsSummary> getSummary(
-            @RequestParam(required = false) Instant from,
-            @RequestParam(required = false) Instant to,
-            @RequestParam(required = false) String eventType,
-            @RequestParam(required = false) String eventSource,
-            @RequestParam(required = false) String sessionId
-    ){
-        AnalyticsSummary summary = service.getSummary(from, to, eventType, eventSource, sessionId);
-        return ResponseEntity.ok(summary);
-    }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id){

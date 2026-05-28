@@ -10,6 +10,6 @@ import java.util.Map;
 public class AnalyticsSummary {
 
     private long totalRecords;
-    private Map<String, Long> recordsByCategory;
+    private Map<String, Long> totalsByEventType;
     private long uniqueSessions;
 }
